@@ -7,8 +7,8 @@ import java.util.List;
 
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
-import androidx.work.WorkStatus;
 
 /**
  * Created by mustafa.urgupluoglu on 6/7/18.
@@ -17,9 +17,9 @@ public class TestViewModel extends ViewModel {
 
     private final String TAG_OUTPUT = "TAG_OUTPUT";
     private WorkManager mWorkManager;
-    private LiveData<List<WorkStatus>> mSavedWorkStatus;
+    private LiveData<List<WorkInfo>> mSavedWorkStatus;
 
-    LiveData<List<WorkStatus>> getOutputStatus() { return mSavedWorkStatus; }
+    LiveData<List<WorkInfo>> getOutputStatus() { return mSavedWorkStatus; }
 
     public TestViewModel() {
 
@@ -27,7 +27,7 @@ public class TestViewModel extends ViewModel {
 
         // This transformation makes sure that whenever the current work Id changes the WorkStatus
         // the UI is listening to changes
-        mSavedWorkStatus = mWorkManager.getStatusesByTag(TAG_OUTPUT);
+        mSavedWorkStatus = mWorkManager.getWorkInfosByTagLiveData(TAG_OUTPUT);
     }
 
     void doJob(String randomString){
@@ -40,6 +40,7 @@ public class TestViewModel extends ViewModel {
                         .addTag(TAG_OUTPUT)
                         .setInputData(inputData)
                         .build();
+
         WorkManager.getInstance().enqueue(compressionWork);
     }
 }
